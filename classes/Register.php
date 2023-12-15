@@ -133,4 +133,26 @@ class Register
                 }
         }
     }
+
+    // Delete student
+    public function delStudent($id) {
+        $img_query = "SELECT * FROM tbl_register WHERE id='$id'";
+        $img_res = $this->db->select($img_query);
+        if($img_res) {
+            while($row = mysqli_fetch_assoc($img_res)) {
+                $photo = $row['photo'];
+                unlink($photo);
+            }
+        }
+
+        $del_query = "DELETE FROM tbl_register WHERE id ='$id'";
+        $del = $this->db->delete($del_query);
+        if ($del) {
+            $msg = "Student delete successful";
+            return $msg;
+        } else {
+            $msg = "delete failed";
+            return $msg;
+        }
+    }
 }

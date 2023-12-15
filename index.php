@@ -3,7 +3,10 @@
 include_once 'classes/Register.php';
 $re = new Register();
 
-
+if(isset($_GET['delStd'])) {
+    $id = base64_decode($_GET['delStd']);
+    $delStudent = $re->delStudent($id);
+  }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -25,6 +28,18 @@ $re = new Register();
         <div class="row d-flex justify-content-center">
             <div class="col-md-12">
                 <div class="card shadow">
+                    <?php
+                    if (isset($delStudent)) {
+                    ?>
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        <strong><?= $delStudent ?></strong>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        </div>
+                    <?php
+                    }
+                    ?>
                     <div class="card-header d-flex align-items-center justify-content-between">
 
                         <h3>All Student Info</h3>
