@@ -3,7 +3,10 @@
 include_once 'classes/Register.php';
 $re = new Register();
 
-
+if(isset($_GET['delStd'])) {
+    $id = base64_decode($_GET['delStd']);
+    $delStudent = $re->delStudent($id);
+  }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -25,6 +28,18 @@ $re = new Register();
         <div class="row d-flex justify-content-center">
             <div class="col-md-12">
                 <div class="card shadow">
+                    <?php
+                    if (isset($delStudent)) {
+                    ?>
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        <strong><?= $delStudent ?></strong>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        </div>
+                    <?php
+                    }
+                    ?>
                     <div class="card-header d-flex align-items-center justify-content-between">
 
                         <h3>All Student Info</h3>
@@ -43,17 +58,26 @@ $re = new Register();
                                     <th>Address</th>
                                     <th>Action</th>
                                 </tr>
-                                <tr>
-                                    <td>Jhon</td>
-                                    <td>jhon@gmail.com</td>
-                                    <td>0123456789</td>
-                                    <td><img style="width: 100px;" src="" class="img-fluid" alt=""></td>
-                                    <td>United State</td>
-                                    <td>
-                                        <a href="" class="btn btn-warning">Edit</a>
-                                        <a href="" onclick="return confirm('Are you sere to delete')" class="btn btn-danger">Delete</a>
-                                    </td>
-                                </tr>
+                                <?php
+                                $allStd = $re->allStudent();
+                                if ($allStd) {
+                                    while ($row = mysqli_fetch_assoc($allStd)) {
+                                ?>
+                                        <tr>
+                                            <td><?= $row['name'] ?></td>
+                                            <td><?= $row['email'] ?></td>
+                                            <td><?= $row['phone'] ?></td>
+                                            <td><img style="width: 100px;" src="<?= $row['photo'] ?>" class="img-fluid" alt=""></td>
+                                            <td><?= $row['address'] ?></td>
+                                            <td>
+                                                <a href="edit.php?id=<?= base64_encode($row['id']) ?>" class="btn btn-warning">Edit</a>
+                                                <a href="?delStd=<?= base64_encode($row['id']) ?>" onclick="return confirm('Are you sere to delete')" class="btn btn-danger">Delete</a>
+                                            </td>
+                                        </tr>
+                                <?php
+                                    }
+                                }
+                                ?>
                             </thead>
                         </table>
                     </div>

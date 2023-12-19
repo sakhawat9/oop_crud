@@ -2,7 +2,7 @@
 
 include_once 'lib/Database.php';
 
-class Register
+class Product
 {
 
     public $db;
@@ -12,11 +12,10 @@ class Register
         $this->db = new Database();
     }
 
-    public function addRegister($data, $file) {
-        $name = $data['name'];
-        $email = $data['email'];
-        $phone = $data['phone'];
-        $address = $data['address'];
+    public function addProduct($data, $file) {
+        $title = $data['title'];
+        $subtitle = $data['subtitle'];
+        $description = $data['description'];
 
         $permited = array('jpg', 'jpeg', 'png', 'gif');
         $file_name = $file['photo']['name'];
@@ -30,7 +29,7 @@ class Register
         $upload_image = "upload/" . $unique_image;
 
 
-        if (empty($name) || empty($email) || empty($phone) || empty($address) || empty($file_temp) || empty($upload_image)) {
+        if (empty($title) || empty($subtitle) || empty($description) || empty($file_temp) || empty($upload_image)) {
             $msg = "Please Must Not Be empty";
             return $msg;
         } elseif ($file_size > 1048567) {
@@ -42,38 +41,37 @@ class Register
         } else {
             move_uploaded_file($file_temp, $upload_image);
 
-            $query = "INSERT INTO `tbl_register`(`name`, `email`, `phone`, `photo`, `address`) VALUES ('$name', '$email', '$phone', '$upload_image', '$address')";
+            $query = "INSERT INTO `tbl_products`(`title`, `subtitle`, `photo`, `description`) VALUES ('$title', '$subtitle', '$upload_image', '$description')";
 
             $result = $this->db->insert($query);
 
             if ($result) {
-                $msg = "Registration successful";
+                $msg = "Product added successful";
                 return $msg;
             } else {
-                $msg = "Registration failed";
+                $msg = "Product added failed";
                 return $msg;
             }
         }
 
     }
-    public function allStudent() {
-        $query = "SELECT * FROM tbl_register ORDER BY id DESC";
+    public function allProducts() {
+        $query = "SELECT * FROM tbl_products ORDER BY id DESC";
         $result = $this->db->select($query);
         return $result;
     }
 
-    public function getStdById($id) {
-        $query = "SELECT * FROM tbl_register WHERE id ='$id'";
+    public function getProductById($id) {
+        $query = "SELECT * FROM tbl_products WHERE id ='$id'";
         $result = $this->db->select($query);
         return $result;
     }
 
-    // Update Student
-    public function updateStudent($data, $file, $id) {
-        $name = $data['name'];
-        $email = $data['email'];
-        $phone = $data['phone'];
-        $address = $data['address'];
+    // Update Product
+    public function updateProduct($data, $file, $id) {
+        $title = $data['title'];
+        $subtitle = $data['subtitle'];
+        $description = $data['description'];
 
         $permited = array('jpg', 'jpeg', 'png', 'gif');
         $file_name = $file['photo']['name'];
@@ -86,7 +84,7 @@ class Register
         $upload_image = "upload/" . $unique_image;
 
 
-        if (empty($name) || empty($email) || empty($phone) || empty($address)) {
+        if (empty($title) || empty($subtitle) || empty($description)) {
             $msg = "Please Must Not Be empty";
             return $msg;
         } if (!empty($file_name) ) {
@@ -98,7 +96,7 @@ class Register
                 return $msg;
             } else {
 
-                $img_query = "SELECT * FROM tbl_register WHERE id='$id'";
+                $img_query = "SELECT * FROM tbl_products WHERE id='$id'";
                 $img_res = $this->db->select($img_query);
                 if($img_res) {
                     while($row = mysqli_fetch_assoc($img_res)) {
@@ -109,11 +107,11 @@ class Register
 
                 move_uploaded_file($file_temp, $upload_image);
     
-                $query = "UPDATE tbl_register SET name = '$name', email = '$email', phone = '$phone', photo = '$upload_image', address = '$address' WHERE id='$id'";
+                $query = "UPDATE tbl_products SET title = '$title', subtitle = '$subtitle', photo = '$upload_image', description = '$description' WHERE id='$id'";
                 $result = $this->db->insert($query);
     
                 if ($result) {
-                    $msg = "Student update successful";
+                    $msg = "Product update successful";
                     return $msg;
                 } else {
                     $msg = "update failed";
@@ -121,11 +119,11 @@ class Register
                 }
             }
         } else {
-            $query = "UPDATE tbl_register SET name = '$name', email = '$email', phone = '$phone', address = '$address' WHERE id='$id'";
+            $query = "UPDATE tbl_products SET title = '$title', subtitle = '$subtitle', description = '$description' WHERE id='$id'";
                 $result = $this->db->insert($query);
     
                 if ($result) {
-                    $msg = "Student update successful";
+                    $msg = "Product update successful";
                     return $msg;
                 } else {
                     $msg = "update failed";
@@ -134,9 +132,9 @@ class Register
         }
     }
 
-    // Delete student
-    public function delStudent($id) {
-        $img_query = "SELECT * FROM tbl_register WHERE id='$id'";
+    // Delete Product
+    public function delProduct($id) {
+        $img_query = "SELECT * FROM tbl_products WHERE id='$id'";
         $img_res = $this->db->select($img_query);
         if($img_res) {
             while($row = mysqli_fetch_assoc($img_res)) {
@@ -145,10 +143,10 @@ class Register
             }
         }
 
-        $del_query = "DELETE FROM tbl_register WHERE id ='$id'";
+        $del_query = "DELETE FROM tbl_products WHERE id ='$id'";
         $del = $this->db->delete($del_query);
         if ($del) {
-            $msg = "Student delete successful";
+            $msg = "Product delete successful";
             return $msg;
         } else {
             $msg = "delete failed";
