@@ -3,10 +3,10 @@
 include_once 'classes/Product.php';
 $re = new Product();
 
-if(isset($_GET['delStd'])) {
+if (isset($_GET['delStd'])) {
     $id = base64_decode($_GET['delStd']);
     $delProducts = $re->delProduct($id);
-  }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -27,15 +27,15 @@ if(isset($_GET['delStd'])) {
     <div class="container">
         <div class="row d-flex justify-content-center">
             <div class="col-md-12">
-                <div class="card shadow">
+                <div class="card">
                     <?php
                     if (isset($delProducts)) {
                     ?>
                         <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                        <strong><?= $delProducts ?></strong>
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                            <strong><?= $delProducts ?></strong>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                         </div>
                     <?php
                     }
@@ -47,40 +47,32 @@ if(isset($_GET['delStd'])) {
                             Add Products
                         </a>
                     </div>
-                    <div class="card-body">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Title</th>
-                                    <th>Subtitle</th>
-                                    <th>Photo</th>
-                                    <th>Description</th>
-                                    <th>Action</th>
-                                </tr>
-                                <?php
-                                $allStd = $re->allProducts();
-                                if ($allStd) {
-                                    while ($row = mysqli_fetch_assoc($allStd)) {
-                                ?>
-                                        <tr>
-                                            <td><?= $row['title'] ?></td>
-                                            <td><?= $row['subtitle'] ?></td>
-                                            <td><img style="width: 100px;" src="<?= $row['photo'] ?>" class="img-fluid" alt=""></td>
-                                            <td><?= $row['description'] ?></td>
-                                            <td>
-                                                <a href="edit.php?id=<?= base64_encode($row['id']) ?>" class="btn btn-warning">Edit</a>
-                                                <a href="?delStd=<?= base64_encode($row['id']) ?>" onclick="return confirm('Are you sere to delete')" class="btn btn-danger">Delete</a>
-                                            </td>
-                                        </tr>
-                                <?php
-                                    }
-                                }
-                                ?>
-                            </thead>
-                        </table>
-                    </div>
                 </div>
             </div>
+        </div>
+        <div class="row mt-5">
+
+            <?php
+            $allStd = $re->allProducts();
+            if ($allStd) {
+                while ($row = mysqli_fetch_assoc($allStd)) {
+            ?>
+                    <div class="col-md-4">
+                        <div class="p-4 shadow rounded">
+                        <img src="<?= $row['photo'] ?>" class="img-fluid mb-3 rounded" alt="">
+                        <h3><?= $row['title'] ?></h3>
+                        <p><?= $row['subtitle'] ?></p>
+                        <p><?= $row['description'] ?></p>
+                        <div class="grid gap-5">
+                            <a href="productEdit.php?id=<?= base64_encode($row['id']) ?>" class="btn btn-warning">Edit</a>
+                            <a href="?delStd=<?= base64_encode($row['id']) ?>" onclick="return confirm('Are you sere to delete')" class="btn btn-danger">Delete</a>
+                        </div>
+                        </div>
+                    </div>
+            <?php
+                }
+            }
+            ?>
         </div>
     </div>
 
