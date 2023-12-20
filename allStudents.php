@@ -1,11 +1,11 @@
 <?php
 
-include_once 'classes/Product.php';
-$re = new Product();
+include_once 'classes/Register.php';
+$re = new Register();
 
 if (isset($_GET['delStd'])) {
     $id = base64_decode($_GET['delStd']);
-    $delProducts = $re->delProduct($id);
+    $delStudent = $re->delStudent($id);
 }
 ?>
 <!DOCTYPE html>
@@ -31,13 +31,13 @@ if (isset($_GET['delStd'])) {
             </button>
             <div class="collapse navbar-collapse" id="navbarText">
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-item ">
+                    <li class="nav-item">
                         <a class="nav-link" href="index.php">Home</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item active">
                         <a class="nav-link" href="allStudents.php">All Students</a>
                     </li>
-                    <li class="nav-item active">
+                    <li class="nav-item">
                         <a class="nav-link" href="allProducts.php">All Products</a>
                     </li>
                 </ul>
@@ -48,12 +48,12 @@ if (isset($_GET['delStd'])) {
     <div class="container">
         <div class="row d-flex justify-content-center">
             <div class="col-md-12">
-                <div class="card">
+                <div class="card shadow">
                     <?php
-                    if (isset($delProducts)) {
+                    if (isset($delStudent)) {
                     ?>
                         <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                            <strong><?= $delProducts ?></strong>
+                            <strong><?= $delStudent ?></strong>
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -63,37 +63,47 @@ if (isset($_GET['delStd'])) {
                     ?>
                     <div class="card-header d-flex align-items-center justify-content-between">
 
-                        <h3>All Products Info</h3>
-                        <a href="addProduct.php" class="btn btn-info float-right">
-                            Add Products
+                        <h3>All Student Info</h3>
+                        <a href="addstd.php" class="btn btn-info float-right">
+                            Add Student
                         </a>
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Photo</th>
+                                    <th>Address</th>
+                                    <th>Action</th>
+                                </tr>
+                                <?php
+                                $allStd = $re->allStudent();
+                                if ($allStd) {
+                                    while ($row = mysqli_fetch_assoc($allStd)) {
+                                ?>
+                                        <tr>
+                                            <td><?= $row['name'] ?></td>
+                                            <td><?= $row['email'] ?></td>
+                                            <td><?= $row['phone'] ?></td>
+                                            <td><img style="width: 100px;" src="<?= $row['photo'] ?>" class="img-fluid" alt=""></td>
+                                            <td><?= $row['address'] ?></td>
+                                            <td>
+                                                <a href="edit.php?id=<?= base64_encode($row['id']) ?>" class="btn btn-warning">Edit</a>
+                                                <a href="?delStd=<?= base64_encode($row['id']) ?>" onclick="return confirm('Are you sere to delete')" class="btn btn-danger">Delete</a>
+                                            </td>
+                                        </tr>
+                                <?php
+                                    }
+                                }
+                                ?>
+                            </thead>
+                        </table>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="row mt-5">
-
-            <?php
-            $allStd = $re->allProducts();
-            if ($allStd) {
-                while ($row = mysqli_fetch_assoc($allStd)) {
-            ?>
-                    <div class="col-md-4">
-                        <div class="p-4 shadow rounded">
-                            <img src="<?= $row['photo'] ?>" class="img-fluid mb-3 rounded" alt="">
-                            <h3><?= $row['title'] ?></h3>
-                            <p><?= $row['subtitle'] ?></p>
-                            <p><?= $row['description'] ?></p>
-                            <div class="grid gap-5">
-                                <a href="productEdit.php?id=<?= base64_encode($row['id']) ?>" class="btn btn-warning">Edit</a>
-                                <a href="?delStd=<?= base64_encode($row['id']) ?>" onclick="return confirm('Are you sere to delete')" class="btn btn-danger">Delete</a>
-                            </div>
-                        </div>
-                    </div>
-            <?php
-                }
-            }
-            ?>
         </div>
     </div>
 
